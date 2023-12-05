@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Chat</title>
+    <style>
+      body {
+        margin: 0px;
+        height: 95vh;
+        width: 100%;
+        background-color: #d2d2d2;
+      }
+      header {
+        width: 100%;
+        height: fit-content;
+        text-align: center;
+      }
+      h1 {
+        line-height: 10%;
+        font-size: 2.3em;
+      }
+      #chatForm {
+        margin: auto;
+        display: flex;
+        height: 50px;
+        width: 80%;
+      }
+      #password {
+        width: 30%;
+      }
+      #messageText {
+        width: 50%;
+      }
+      button {
+        width: 20%;
+      }
+      #chat {
+        /* display: flex; */
+        margin: auto;
+        width: 80%;
+        background-color: black;
+        height: 80%;
+        overflow-y: scroll;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+        width: 100%;
+      }
+      li {
+        width: 90%;
+        padding: 10px;
+        display: flex;
+        border: 1px solid white;
+        border-radius: 10px;
+        margin: auto;
+        margin-bottom: 5px;
+        align-items: center;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>BlackList Chat</h1>
+    </header>
+    <div id="chat">
+      <ul id="messages"></ul>
+    </div>
+    <form id="chatForm">
+      <input type="password" id="password" placeholder="Password" required />
+      <input
+        type="text"
+        id="messageText"
+        placeholder="Type your message"
+        autocomplete="off"
+        required
+      />
+      <button type="submit">Send</button>
+    </form>
+
+    <script>
+      const chatForm = document.getElementById("chatForm");
+      const passwordInput = document.getElementById("password");
+      const messageInput = document.getElementById("messageText");
+      const messagesContainer = document.getElementById("messages");
+
+      const ws = new WebSocket(`ws://${location.host}/ws`);
+
+      ws.onmessage = function (event) {
+        const message = document.createElement("li");
+        message.textContent = event.data;
+        messagesContainer.appendChild(message);
+      };
+
+      chatForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var num = Math.floor(Math.random() * 100);
+        const username = {};
+        username[passwordInput.value] = num;
+        const password = passwordInput.value;
+        const message = messageInput.value;
+        if (!password || !message) return;
+
+        const data = JSON.stringify({
+          username,
+          password,
+          text: message,
+        });
+        ws.send(data);
+
+        messageInput.value = "";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+# === requirements.txt
+fastapi   # fastAPI
+uvicorn[standard] # fastAPI를 실행할 uvicorn, standard로 설치해야 websocket등이 정상동작함
+jinja2 # thml템필릿
+pydantic
+
+# ====
